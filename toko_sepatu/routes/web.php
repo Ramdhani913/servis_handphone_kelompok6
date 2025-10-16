@@ -13,3 +13,7 @@ Route::get('/user', function () {
 Route::get('/user/create', function () {
     return view('pages.maindata.user.create');
 });
+
+Route::get('/user/detail', function () {
+    return view('pages.maindata.user.detail');
+});
