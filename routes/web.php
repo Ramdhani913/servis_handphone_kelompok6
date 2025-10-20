@@ -20,7 +20,7 @@ Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 Route::get('/handphone', [HandphoneController::class, 'index'])->name('handphone.index');
 Route::get('/handphone/create', [HandphoneController::class, 'create'])->name('handphone.create');
 Route::post('/handphone/store', [HandphoneController::class, 'store'])->name('handphone.store');
-Route::get('/handphone/{id}', [HandphoneController::class, 'show'])->name('handphone.show');
+Route::get('/handphones/{id}', [HandphoneController::class, 'show'])->name('handphones.show');
 
 // ===== ROUTE UNTUK SERVICE =====
 Route::get('/service', [ServiceController::class, 'index'])->name('service.index');

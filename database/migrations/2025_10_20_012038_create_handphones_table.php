@@ -10,12 +10,18 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('handphones', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('handphones', function (Blueprint $table) {
+        $table->id();
+        $table->string('nama');
+        $table->string('merek');
+        $table->string('tipe');
+        $table->integer('stok');
+        $table->decimal('harga', 10, 2);
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.
