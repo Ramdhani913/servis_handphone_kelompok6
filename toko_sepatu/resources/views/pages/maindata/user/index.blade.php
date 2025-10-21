@@ -117,53 +117,24 @@
             </tr>
           </thead>
           <tbody>
+            @foreach ($users as $user)
             <tr>
-              <td><img src="assets/images/faces/face1.jpg" class="rounded-circle" width="40" height="40" alt="image"></td>
-              <td>Jacob</td>
-              <td><span class="text-danger fw-bold">Admin</span></td>
-              <td><span class="text-success fw-bold">Aktif</span></td>
+              <td><img  src="{{ asset('storage/'. $user->image) }}" class="rounded-circle" width="40" height="40" alt="image"></td>
+              <td>{{ $user->name }}</td>
+              <td><span class="text-danger fw-bold">{{ $user->role }}</span></td>
+              <td><span class="text-success fw-bold">{{ $user->is_active }}</span></td>
               <td>
-                <button class="btn btn-edit btn-sm">Edit</button>
-                <button class="btn btn-delete btn-sm">Delete</button>
-                <button class="btn btn-detail btn-sm">Detail</button>
+                <a href={{ route('users.edit', $user->id) }}><button class="btn btn-edit btn-sm">Edit</button></a>
+                <form action="/users/{{ $user->id }}/delete" method="POST" style="display:inline;">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                </form>
+                <a href="{{ route('users.show', $user->id) }}"><button class="btn btn-detail btn-sm">Detail</button></a>
               </td>
-            </tr>
-
-            <tr>
-              <td><img src="assets/images/faces/face2.jpg" class="rounded-circle" width="40" height="40" alt="image"></td>
-              <td>Messy</td>
-              <td><span class="text-info fw-bold">Customer</span></td>
-              <td><span class="text-danger fw-bold">Nonaktif</span></td>
-              <td>
-                <button class="btn btn-edit btn-sm">Edit</button>
-                <button class="btn btn-delete btn-sm">Delete</button>
-                <button class="btn btn-detail btn-sm">Detail</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td><img src="assets/images/faces/face3.jpg" class="rounded-circle" width="40" height="40" alt="image"></td>
-              <td>John</td>
-              <td><span class="text-success fw-bold">Technician</span></td>
-              <td><span class="text-success fw-bold">Aktif</span></td>
-              <td>
-                <button class="btn btn-edit btn-sm">Edit</button>
-                <button class="btn btn-delete btn-sm">Delete</button>
-                <button class="btn btn-detail btn-sm">Detail</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td><img src="assets/images/faces/face4.jpg" class="rounded-circle" width="40" height="40" alt="image"></td>
-              <td>Peter</td>
-              <td><span class="text-info fw-bold">Customer</span></td>
-              <td><span class="text-success fw-bold">Aktif</span></td>
-              <td>
-                <button class="btn btn-edit btn-sm">Edit</button>
-                <button class="btn btn-delete btn-sm">Delete</button>
-                <button class="btn btn-detail btn-sm">Detail</button>
-              </td>
-            </tr>
+            </tr> 
+            @endforeach
+           
           </tbody>
         </table>
       </div>
