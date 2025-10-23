@@ -65,35 +65,35 @@
     <h4>Detail User</h4>
 
     <div class="info-item">
+      <label>Upload Foto</label>
+      <div class="user-photo">
+        <img src="{{ asset('storage/'. $user->image) }}" alt="User Photo">
+      </div>
+    </div>
+
+    <div class="info-item">
       <label>Nama</label>
-      <span>Rahmatanna Nazaro</span>
+      <span>{{ $user->name }}</span>
     </div>
 
     <div class="info-item">
       <label>Alamat</label>
-      <span>Jl. Mentari Mas No.63, Sukarame</span>
+      <span>{{  $user->adress }}</span>
     </div>
 
     <div class="info-item">
       <label>No Handphone</label>
-      <span>098842421</span>
+      <span>{{ $user->phonenumber }}</span>
     </div>
 
     <div class="info-item">
       <label>Email</label>
-      <span>rahmatanna.nazaro@gmail.com</span>
+      <span>{{ $user->email }}</span>
     </div>
 
     <div class="info-item">
       <label>Role</label>
-      <span>Customer</span>
-    </div>
-
-    <div class="info-item">
-      <label>Upload Foto</label>
-      <div class="user-photo">
-        <img src="https://i.ibb.co/6ZzVjbb/profile-demo.jpg" alt="User Photo">
-      </div>
+      <span>{{ $user->role }}</span>
     </div>
   </div>
 </div>

@@ -1,23 +1,100 @@
 @extends('layouts.app')
+
 <style>
-    .container-new {
-    max-width: 1400px; /* wider than bootstrap container */
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 24px;
-    padding-right: 24px;
-    box-sizing: border-box;
+/* Full halaman tanpa batas lebar */
+.container-new {
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 40px 80px; /* tambah ruang kiri kanan */
+  box-sizing: border-box;
+}
+
+/* Kolom kiri dan kanan biar full sejajar dan rata */
+.col-lg-6, .col-md-6 {
+  padding: 0 15px;
+}
+
+/* Card besar dan lebar penuh */
+.card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  height: 100%;
+}
+
+/* Card-body biar isi tidak sempit */
+.card-body {
+  padding: 40px;
+}
+
+/* Input besar dan full lebar */
+.form-control {
+  height: 56px;
+  font-size: 16px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+/* Label lebih tegas */
+.col-form-label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Tombol besar dan proporsional */
+.btn {
+  padding: 14px 32px;
+  font-size: 16px;
+  border-radius: 10px;
+}
+
+/* Judul card */
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+/* Jarak antar card */
+.row {
+  row-gap: 40px;
+}
+
+/* Row form bagian foto */
+.g-2 {
+  gap: 12px;
+}
+
+/* Biar halaman benar-benar full */
+body, html {
+  width: 100%;
+  height: 100%;
+  background-color: #f8f9fa;
+}
+
+/* Responsif untuk layar kecil */
+@media (max-width: 992px) {
+  .container-new {
+    padding: 20px;
+  }
+  .card-body {
+    padding: 20px;
+  }
 }
 </style>
+
 @section('content')
 <form method="POST" action="/users/store" enctype="multipart/form-data">
   @csrf
   <div class="container-new">
     <div class="row">
-      {{-- left column (slightly narrower now) --}}
+      {{-- Kolom kiri --}}
       <div class="col-lg-6 col-md-6 grid-margin stretch-card">
-        <div class="card">
+        <div class="card w-100 h-100">
           <div class="card-body">
             <h4 class="card-title">User Info</h4>
 
@@ -45,9 +122,9 @@
         </div>
       </div>
 
-      {{-- right column (wider now) --}}
+      {{-- Kolom kanan --}}
       <div class="col-lg-6 col-md-6 grid-margin stretch-card">
-        <div class="card">
+        <div class="card w-100 h-100">
           <div class="card-body">
             <h4 class="card-title">Account</h4>
 
@@ -67,26 +144,27 @@
 
             <div class="form-group">
               <label class="col-form-label">Foto</label>
-              <div class="row g-2">
-                <div class="col-9">
-                  <!-- clickable area styled like other inputs (acts as upload) -->
+              <div class="row g-2 align-items-center">
+                <div class="col-8">
                   <label for="image" class="form-control mb-0 d-flex align-items-center" style="cursor:pointer;">
                     <span id="file-name-label">Upload Foto</span>
                   </label>
                 </div>
-                  <div class="col-1">
-                    <!-- filename display, same style/size as other inputs -->
-                    <input type="text" id="file-name-display" class="form-control" readonly placeholder="No file">
-                  </div>
+                <div class="col-4">
+                  <input type="text" id="file-name-display" class="form-control" readonly placeholder="No file">
                 </div>
-
-                <input type="file" id="image" name="image" style="display:none;"
-                  onchange="(function(f){ document.getElementById('file-name-label').textContent = f?.name || 'Upload Foto'; document.getElementById('file-name-display').value = f?.name || ''; })(this.files[0]);">
               </div>
+
+              <input type="file" id="image" name="image" style="display:none;"
+                onchange="(function(f){ 
+                  document.getElementById('file-name-label').textContent = f?.name || 'Upload Foto'; 
+                  document.getElementById('file-name-display').value = f?.name || ''; 
+                })(this.files[0]);">
+            </div>
 
             <input type="hidden" name="is_active" value="active">
 
-            <div class="mt-3">
+            <div class="mt-4">
               <button type="submit" class="btn btn-primary mr-2">Submit</button>
               <button type="reset" class="btn btn-dark">Cancel</button>
             </div>
@@ -94,7 +172,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </form>
