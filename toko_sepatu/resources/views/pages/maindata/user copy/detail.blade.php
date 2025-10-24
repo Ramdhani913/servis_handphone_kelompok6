@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-  /* ====== DETAIL HANDPHONE STYLE (SAMA SEPERTI FIGMA) ====== */
+  /* ====== DETAIL USER STYLE (SAMA SEPERTI FIGMA) ====== */
   body {
     background-color: #181824;
   }
@@ -62,36 +62,39 @@
 
 <div class="content-wrapper">
   <div class="card-detail">
-    <h4>Detail HAandphone</h4>
+    <h4>Detail User</h4>
 
-     <div class="info-item">
+    <div class="info-item">
+      <label>Nama</label>
+      <span>Rahmatanna Nazaro</span>
+    </div>
+
+    <div class="info-item">
+      <label>Alamat</label>
+      <span>Jl. Mentari Mas No.63, Sukarame</span>
+    </div>
+
+    <div class="info-item">
+      <label>No Handphone</label>
+      <span>098842421</span>
+    </div>
+
+    <div class="info-item">
+      <label>Email</label>
+      <span>rahmatanna.nazaro@gmail.com</span>
+    </div>
+
+    <div class="info-item">
+      <label>Role</label>
+      <span>Customer</span>
+    </div>
+
+    <div class="info-item">
       <label>Upload Foto</label>
       <div class="user-photo">
-        <img src="{{ asset('storage/'. $handphone->image) }}" alt="Handphone  Photo">
+        <img src="https://i.ibb.co/6ZzVjbb/profile-demo.jpg" alt="User Photo">
       </div>
     </div>
-
-    <div class="info-item">
-      <label>Brand</label>
-      <span>{{ $handphone->brand }}</span>
-    </div>
-
-    <div class="info-item">
-      <label>Model</label>
-      <span>{{ $handphone->model }}</span>
-    </div>
-
-    <div class="info-item">
-      <label>Tahun Rilis</label>
-      <span>{{ $handphone->release_year }}</span>
-    </div>
-
-    <div class="info-item">
-      <label>Status</label>
-      <span>aktif</span>
-    </div>
-
-   
   </div>
 </div>
 @endsection

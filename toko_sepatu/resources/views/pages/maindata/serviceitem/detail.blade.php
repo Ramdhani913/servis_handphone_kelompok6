@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-  /* ====== DETAIL HANDPHONE STYLE (SAMA SEPERTI FIGMA) ====== */
+  /* ====== DETAIL SERVICE STYLE (SAMA SEPERTI FIGMA) ====== */
   body {
     background-color: #181824;
   }
@@ -62,36 +62,23 @@
 
 <div class="content-wrapper">
   <div class="card-detail">
-    <h4>Detail HAandphone</h4>
+    <h4>Detail Service Item</h4>
 
-     <div class="info-item">
-      <label>Upload Foto</label>
-      <div class="user-photo">
-        <img src="{{ asset('storage/'. $handphone->image) }}" alt="Handphone  Photo">
-      </div>
+    <div class="info-item">
+      <label>Nama Service</label>
+      <span>{{ $serviceitem->service_name }}</span>
     </div>
 
     <div class="info-item">
-      <label>Brand</label>
-      <span>{{ $handphone->brand }}</span>
-    </div>
-
-    <div class="info-item">
-      <label>Model</label>
-      <span>{{ $handphone->model }}</span>
-    </div>
-
-    <div class="info-item">
-      <label>Tahun Rilis</label>
-      <span>{{ $handphone->release_year }}</span>
+      <label>Price</label>
+      <span>{{ $serviceitem->price }}</span>
     </div>
 
     <div class="info-item">
       <label>Status</label>
-      <span>aktif</span>
+      <span>{{ $serviceitem->is_active }}</span>
     </div>
 
-   
   </div>
 </div>
 @endsection

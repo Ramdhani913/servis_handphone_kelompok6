@@ -8,56 +8,37 @@
     padding-left: 24px;
     padding-right: 24px;
     box-sizing: border-box;
-
-     .user-photo {
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-  }
-
-  .user-photo img {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 2px solid #3f3f55;
-    object-fit: cover;
-  }
 }
 </style>
 @section('content')
-<form method="POST" action="/users/{{ $user->id }}/update" enctype="multipart/form-data">
+<form method="POST" action="/users/store" enctype="multipart/form-data">
   @csrf
   <div class="container-new">
     <div class="row">
-    
       {{-- left column (slightly narrower now) --}}
       <div class="col-lg-6 col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Edit User</h4>
-                  
-            <div class="user-photo">
-              <img src="{{ asset('storage/'. $user->image) }}" alt="User Photo">
-            </div>
+            <h4 class="card-title">User Info</h4>
 
             <div class="form-group">
               <label class="col-form-label">Username</label>
-              <input type="text" class="form-control" name="name" Value="{{ old('name', $user->name) }}" required>
+              <input type="text" class="form-control" name="name" placeholder="Username" required>
             </div>
 
             <div class="form-group">
               <label class="col-form-label">Alamat</label>
-              <input type="text" class="form-control" name="adress" value="{{ old('adress', $user->adress) }}" required>
+              <input type="text" class="form-control" name="adress" placeholder="Alamat" required>
             </div>
 
             <div class="form-group">
               <label class="col-form-label">Email</label>
-              <input type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required>
+              <input type="email" class="form-control" name="email" placeholder="Email" required>
             </div>
 
             <div class="form-group">
               <label class="col-form-label">No Handphone</label>
-              <input type="text" class="form-control" name="phonenumber" value="{{ old('phonenumber', $user->phonenumber) }}" required>
+              <input type="text" class="form-control" name="phonenumber" placeholder="Mobile number" required>
             </div>
 
           </div>
@@ -72,12 +53,12 @@
 
             <div class="form-group">
               <label class="col-form-label">Password</label>
-              <input type="password" class="form-control" name="password" placeholder="Password">
+              <input type="password" class="form-control" name="password" placeholder="Password" required>
             </div>
 
             <div class="form-group">
               <label class="col-form-label">Role</label>
-              <select class="form-control" name="role" required value="{{ old('role', $user->role) }}">
+              <select class="form-control" name="role" required>
                 <option value="admin">Admin</option>
                 <option value="technician">Technician</option>
                 <option value="customer">Customer</option>
