@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\HandphoneController;
-use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\HandphoneController;
 
 Route::get('/', function () {
     return view('pages.dashboard.index');
@@ -36,3 +37,11 @@ Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
 Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create');
 Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store');
 Route::get('/sales/{id}', [SalesController::class, 'show'])->name('sales.show');
+
+// Route untuk Payment
+Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
+Route::post('/payment/store', [PaymentController::class, 'store'])->name('payment.store');
+Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('payment.show');
+Route::get('/payment/{id}/edit', [PaymentController::class, 'edit'])->name('payment.edit');
+Route::post('/payment/{id}/update', [PaymentController::class, 'update'])->name('payment.update');
+Route::delete('/payment/{id}/delete', [PaymentController::class, 'destroy'])->name('payment.destroy');
