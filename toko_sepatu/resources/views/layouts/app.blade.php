@@ -3,6 +3,7 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
+     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Corona Admin</title>
     <!-- plugins:css -->
@@ -82,5 +83,126 @@
     <!-- Custom js for this page -->
     <script src="assets/js/dashboard.js"></script>
     <!-- End custom js for this page -->
+
+
+   
+
+    {{-- toastify --}}
+    <script src="{{ asset('assets/extensions/toastify-js/src/toastify.js') }}"></script>
+    @if (session('success'))
+        <script>
+            Toastify({
+                    text: "{{ session('success') }}",
+                    duration: 3000,
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            }).showToast()
+        </script>
+    @endif
+    @if (session('errors'))
+        <script>
+            Toastify({
+                    text: "{{ session('errors') }}",
+                    duration: 3000,
+                    backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+            }).showToast()
+        </script>
+    @endif
+    @if (session('info'))
+        <script>
+            Toastify({
+                    text: "{{ session('info') }}",
+                    duration: 3000,
+            }).showToast()
+        </script>
+    @endif
+
+    <script>
+         function toastifyConfirm(url) {
+            var deleteButton = document.querySelectorAll(".delete-button");
+
+            for (var i = 0; i < deleteButton.length; i++) {
+                deleteButton[i].disabled = true;
+            }
+
+            let confirmHtml = `
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <span>Are you sure?</span>
+                    <small>This action cannot be undone.</small>
+                    <hr>
+                    <div class="d-flex justify-content-between gap-2">
+                        <button id="yesBtn" class="btn btn-outline-white w-100">Yes</button>
+                        <button id="noBtn" class="btn btn-outline-white w-100">Cancel</button>
+                    </div>
+                </div>
+            `;
+
+            let toast = Toastify({
+                node: (() => {
+                    const div = document.createElement("div");
+                    div.innerHTML = confirmHtml;
+                    return div;
+                })(),
+                duration: -1,
+                close: false,
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
+                style: {
+                    borderRadius: "8px",
+                },
+                backgroundColor: "linear-gradient(to right, #435ebe, #198754)",
+                onClick: function(){}
+            }).showToast();
+
+            setTimeout(() => {
+                document.getElementById("yesBtn")?.addEventListener("click", () => {
+                    toast.hideToast();
+                    window.location.href = url;
+                });
+
+                document.getElementById("noBtn")?.addEventListener("click", () => {
+                    toast.hideToast();
+                    
+                    for (var i = 0; i < deleteButton.length; i++) {
+                        deleteButton[i].disabled = false;
+                    }
+                });
+            }, 100);
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $(".currency").on("keyup", function () {
+                var currencyVal = $(this).val();
+                var currencyValNumber = currencyVal.replace(/[^0-9]/g, '');
+                var formatted = currencyValNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                $(this).val(formatted);
+            });
+
+             $(".currency").each(function () {
+                var currencyVal = $(this).val();
+                var currencyValNumber = currencyVal.replace(/[^0-9]/g, '');
+                var formatted = currencyValNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                $(this).val(formatted);
+            });
+        });
+
+        // idr format
+        function currency(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+    </script>
+
+    <script src="{{ asset('vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+
+
+    @stack('scripts')
+    @stack('custom.js')
   </body>
 </html>

@@ -41,7 +41,7 @@ class HandphoneController extends Controller
             'image' => $path,
         ]);
 
-        return redirect()->route('handphones.create')->with('success', 'Handphone created successfully.');
+        return redirect()->route('handphones.index')->with('success', 'Handphone created successfully.');
     }
 
     public function edit ($id)
@@ -85,7 +85,7 @@ class HandphoneController extends Controller
             'image' => $path,
         ]);
 
-        return redirect()->route('handphones.edit', $id)->with('success', 'Handphone updated successfully.');
+        return redirect()->route('handphones.index', $id)->with('success', 'Handphone updated successfully.');
     }
 
     public function show($id)
@@ -93,4 +93,25 @@ class HandphoneController extends Controller
         $handphone = Handphone::findOrFail($id);
         return view('pages.maindata.handphone.detail', compact('handphone'));
     }   
+
+    public function index()
+    {
+        $handphones = Handphone::all();
+        return view('pages.maindata.handphone.index', compact('handphones'));
+    }
+
+    public function destroy($id)
+    {
+        $handphone = Handphone::findOrFail($id);
+
+        // Delete the image file if it exists
+        if ($handphone->image && Storage::disk('public')->exists($handphone->image)) {
+            Storage::disk('public')->delete($handphone->image);
+        }
+
+        // Delete the handphone record
+        $handphone->delete();
+
+        return redirect()->route('handphones.index')->with('success', 'Handphone deleted successfully.');
+    }
 }
