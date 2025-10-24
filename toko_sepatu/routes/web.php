@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\HandphoneController;
-use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\HandphoneController;
 
 Route::get('/', function () {
     return view('pages.dashboard.index');
