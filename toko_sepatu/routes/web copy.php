@@ -36,11 +36,8 @@ Route::get('/handphones/{id}', [HandphoneController::class, 'show'])->name('hand
 Route::get('/handphones', [HandphoneController::class, 'index'])->name('handphones.index');
 Route::delete('/handphones/{id}/delete', [HandphoneController::class, 'destroy'])->name('handphones.destroy');
 //Service Routes
-Route::prefix('services')->group(function () {
-    Route::get('/', [ServiceController::class, 'index'])->name('services.index');
-    Route::get('/create', [ServiceController::class, 'create'])->name('services.create');
-    Route::post('/', [ServiceController::class, 'store'])->name('services.store');
-    Route::get('/{id}', [ServiceController::class, 'detail'])->name('services.show');
-    
-});
-Route::patch('services/{id}/status', [ServiceController::class, 'updateStatus'])->name('services.updateStatus');
+Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+Route::post('/services/store', [ServiceController::class, 'store'])->name('services.store');
+
+Route::get('/get-service-items', [ServiceController::class, 'getServiceItems'])->name('getServiceItems');

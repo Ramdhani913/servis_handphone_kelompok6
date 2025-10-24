@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Serviceitem extends Model
 {
+use SoftDeletes;
+
     protected $guarded = [];
 
     protected $fillable = [
@@ -13,4 +16,10 @@ class Serviceitem extends Model
         'price',
         'is_active'
     ];
+
+    
+    public function servicedetail()
+    {
+        return $this->hasMany(Servicedetail::class, 'serviceitem_id');
+    }
 }

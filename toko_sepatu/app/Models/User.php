@@ -52,4 +52,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+        // relation to other models
+    public function serviceCustomer()
+    {
+        return $this->hasMany(Service::class, 'customer_id');
+    }
+
+    public function serviceTechnician()
+    {
+        return $this->hasMany(Service::class, 'technician_id');
+    }
 }
