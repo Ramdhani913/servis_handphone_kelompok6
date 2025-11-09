@@ -108,5 +108,26 @@ document.addEventListener('DOMContentLoaded', function() {
         select.appendChild(option);
     }
 });
+
+$.ajax({
+    url: "{{ route('handphones.checkDuplicate') }}",
+    method: "POST",
+    data: {
+        _token: '{{ csrf_token() }}',
+        brand: brand,
+        model: model,
+        id: '{{ $handphone->id }}'
+    },
+    success: function(res) {
+        if (res.duplicate) {
+            $('#duplicate-warning').show();
+            $('#submitBtn').prop('disabled', true);
+        } else {
+            $('#duplicate-warning').hide();
+            $('#submitBtn').prop('disabled', false);
+        }
+    }
+});
+
 </script>
 @endsection

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->double('paid')->nullable();
             $table->double('change')->nullable();
             $table->enum('payment_method', ['1', '2'])->nullable()->description('1 = Cash, 2 = Transfer');
-            $table->enum('status_paid', ['0', '1'])->default('0')->description('0 = Paid, 1 = Debt, 2 = Unpaid');
+            $table->enum('status_paid', ['0', '1', '2'])->default('2')->description('0 = Paid, 1 = Debt, 2 = Unpaid');
             $table->dateTime('received_date')->nullable();
             $table->dateTime('completed_date')->nullable();
             $table->timestamps();

@@ -148,13 +148,19 @@
               <td>{{ $service->no_invoice }}</td>
               <td>{{ $service->customer->name }}</td>
               <td>{{ $service->handphones->brand }} | {{ $service->handphones->model }}</td>
-              <td class="status-paid" data-paid="{{ $service->is_paid }}">
-                @if ($service->is_paid == 1)
-                  <span class="dote dote-success"></span><small>Paid</small>
-                @else
-                  <span class="dote dote-danger"></span><small>Unpaid</small>
-                @endif
-              </td>
+              <td class="status-paid" data-paid="{{ $service->status_paid }}">
+    @if ($service->status_paid == 0)
+        <span class="dote dote-success"></span>
+        <small class="text-success fw-bold">Paid</small>
+    @elseif ($service->status_paid == 1)
+        <span class="dote dote-warning"></span>
+        <small class="text-warning fw-bold">Debt</small>
+    @else
+        <span class="dote dote-danger"></span>
+        <small class="text-danger fw-bold">Unpaid</small>
+    @endif
+</td>
+
 <td class="status-service text-center" data-id="{{ $service->id }}" data-status="{{ $service->status }}">
   @php
       $statusClass = [
@@ -182,7 +188,20 @@
               <td>
                 <div class="d-flex justify-content-center gap-2">
                   <a href="services/{{ $service->id }}" class="btn btn-detail btn-sm">Detail</a>
-                  <a href="#" class="btn btn-payment btn-sm">Payment</a>
+                  @php
+  $isPaymentDisabled = ($service->status_paid == 0 || $service->status != 3);
+@endphp
+<a href="/Services/{{ $service->id }}/payment"
+   class="btn btn-payment btn-sm {{ $isPaymentDisabled ? 'disabled' : '' }}"
+   {{ $isPaymentDisabled ? 'disabled' : '' }}>
+   Payment
+</a>
+<form action="/services/{{ $service->id }}/delete" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Yakin hapus user ini?');">Delete</button>
+          </form>
+
                 </div>
               </td>
             </tr>
@@ -231,14 +250,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // Optional: konfirmasi
       if (!confirm(`Ubah status menjadi "${statusLabel[newStatus]}"?`)) return;
 
-      fetch(`/services/${id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ status: newStatus })
-      })
+     fetch(`/services/${id}/status`, {
+  method: 'PATCH',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+  },
+  body: JSON.stringify({ status: newStatus })
+})
+
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -276,6 +296,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+</script>
+<script>
+@if(session('success'))
+Swal.fire({
+  icon: 'success',
+  title: 'Berhasil!',
+  text: '{{ session('success') }}',
+  timer: 2000,
+  showConfirmButton: false
+});
+@endif
+
+@if(session('error'))
+Swal.fire({
+  icon: 'error',
+  title: 'Terjadi Kesalahan!',
+  text: '{{ session('error') }}'
+});
+@endif
 </script>
 @endpush
 

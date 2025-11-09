@@ -9,12 +9,22 @@
     padding-right: 24px;
     box-sizing: border-box;
 }
+
+ .card-fullscreen {
+        width: 1200px; /* kamu bisa ubah jadi 1400px jika ingin lebih lebar */
+        margin: 40px auto;
+        background-color: #1e1e2d;
+        color: #fff;
+        border-radius: 12px;
+        padding: 60px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
 </style>
 
 @section('content')
     <form action="/serviceitems/store" method="POST">
       @csrf
-         <div class="container-new">
+         <div class="card-fullscreen">
     <div class="row">
       {{-- left column (slightly narrower now) --}}
       <div class="col-lg-12 col-md-6 grid-margin stretch-card">

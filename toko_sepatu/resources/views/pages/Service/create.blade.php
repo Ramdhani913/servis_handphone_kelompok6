@@ -107,67 +107,112 @@
         </section>
     </div>
 @endsection
-@push('custom.js')
-    <script>
-        var serviceItems = {!! json_encode($serviceItems) !!};
 
-        $(document).ready(function () {
-            addNewServiceTypeRow();
-            $('#add-row-servicetype').on('click', function () {
-                addNewServiceTypeRow(); 
-            });
-        })
-        function addNewServiceTypeRow() {
-            let rowCount = $('#table-body-servicetype tr').length;
-            row = rowCount + 1;
+@push('custom.css')
+<style>
+    /* Style umum untuk tema gelap */
+    .form-control {
+        color: #ffffff !important;
+        background-color: #1e1e2d !important;
+        border: 1px solid #3a3a4f !important;
+    }
 
-            var selectServiceItem = '<option value="" hidden>Select Service Type...</option>';
-            serviceItems.forEach(serviceItem => {
-                selectServiceItem += `<option value="${serviceItem.id}">${serviceItem.service_name}</option>`
-            });
+    .form-control:disabled,
+    .form-control[readonly] {
+        background-color: #2a2a3d !important;
+        color: #ccc !important;
+    }
 
-            let rowHtml = `
-                <tr class="servicetype-row">
-                    <td>${row}</td>
-                    <td>
-                        <select class="form-control select2" onchange="getServiceItemPrice(${row}, this.value)" name="service_type[]" data-parsley-required="true" id="service_type_${row}">
-                            ${selectServiceItem}
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" name="price[]" disabled readonly  id="price_${row}" class="form-control" placeholder="0">
-                    </td>
-                    <td>
-                        <button onclick="removeServiceTypeRow(this)" class="btn btn-danger btn-remove-product-purcahse-row"><i class="bi bi-trash3"></i></button>
-                    </td>
-                </tr>
-            `;
+    .form-control::placeholder {
+        color: #888 !important;
+    }
 
-            $('#table-body-servicetype').append(rowHtml);
-            updateNumberServiceTypeRow();
-        }
+    select.form-control {
+        color: #ffffff !important;
+        background-color: #1e1e2d !important;
+    }
 
-        function updateNumberServiceTypeRow() {
-            $('#table-body-servicetype tr').each(function (index) {
-                $(this).find('td:first').text(index + 1);
-            });
-            toggleServiceTypeRowButtons();
-        }
+    /* Tombol sekunder dark mode */
+    .btn-secondary {
+        background-color: #2c2c3e !important;
+        border: 1px solid #3a3a4f !important;
+        color: #fff !important;
+    }
+    .btn-secondary:hover {
+        background-color: #3a3a4f !important;
+    }
 
-        function toggleServiceTypeRowButtons(){
-            let rowCount = $('#table-body-servicetype tr').length;
-            $('.btn-remove-product-purcahse-row').prop('disabled', rowCount < 2);
-        } 
-
-        function removeServiceTypeRow(row) {
-            $(row).closest('.servicetype-row').remove();
-            updateNumberServiceTypeRow();
-        }
-
-        function getServiceItemPrice(row, id) {
-            let price = serviceItems.find(serviceItem => serviceItem.id == id).price;
-            $('#table-body-servicetype #price_' + row).val(currency(price));
-        }
-    </script>
+    /* === CLASS BARU untuk kolom Price === */
+    .input-price-white {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #ccc !important;
+    }
+</style>
 @endpush
 
+@push('custom.js')
+<script>
+    var serviceItems = {!! json_encode($serviceItems) !!};
+
+    $(document).ready(function () {
+        addNewServiceTypeRow();
+        $('#add-row-servicetype').on('click', function () {
+            addNewServiceTypeRow(); 
+        });
+    });
+
+    function addNewServiceTypeRow() {
+        let rowCount = $('#table-body-servicetype tr').length;
+        row = rowCount + 1;
+
+        var selectServiceItem = '<option value="" hidden>Select Service Type...</option>';
+        serviceItems.forEach(serviceItem => {
+            selectServiceItem += `<option value="${serviceItem.id}">${serviceItem.service_name}</option>`
+        });
+
+        let rowHtml = `
+            <tr class="servicetype-row">
+                <td>${row}</td>
+                <td>
+                    <select class="form-control select2" onchange="getServiceItemPrice(${row}, this.value)" name="service_type[]" data-parsley-required="true" id="service_type_${row}">
+                        ${selectServiceItem}
+                    </select>
+                </td>
+                <td>
+                    <!-- Gunakan class baru di sini -->
+                    <input type="text" name="price[]" disabled readonly id="price_${row}" class="form-control input-price-white" placeholder="0" style="text-color: black;">
+                </td>
+                <td>
+                    <button onclick="removeServiceTypeRow(this)" class="btn btn-danger btn-remove-product-purcahse-row"><i class="bi bi-trash3"></i></button>
+                </td>
+            </tr>
+        `;
+
+        $('#table-body-servicetype').append(rowHtml);
+        updateNumberServiceTypeRow();
+    }
+
+    function updateNumberServiceTypeRow() {
+        $('#table-body-servicetype tr').each(function (index) {
+            $(this).find('td:first').text(index + 1);
+        });
+        toggleServiceTypeRowButtons();
+    }
+
+    function toggleServiceTypeRowButtons(){
+        let rowCount = $('#table-body-servicetype tr').length;
+        $('.btn-remove-product-purcahse-row').prop('disabled', rowCount < 2);
+    } 
+
+    function removeServiceTypeRow(row) {
+        $(row).closest('.servicetype-row').remove();
+        updateNumberServiceTypeRow();
+    }
+
+    function getServiceItemPrice(row, id) {
+        let price = serviceItems.find(serviceItem => serviceItem.id == id).price;
+        $('#table-body-servicetype #price_' + row).val(currency(price));
+    }
+</script>
+@endpush
