@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'technician', 'customer']);
              $table->string('image', 255)->nullable();
-            $table->enum('is_active', ['active', 'inactive'])->default('inactive');
+            $table->enum('is_active', ['active', 'inactive'])->default('active');
             $table->rememberToken();
             $table->timestamps();
         });

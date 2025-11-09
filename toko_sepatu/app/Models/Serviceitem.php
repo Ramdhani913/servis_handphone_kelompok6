@@ -4,19 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Serviceitem extends Model
 {
 use SoftDeletes;
 
-    protected $guarded = [];
+  use HasFactory;
 
     protected $fillable = [
-        'service_name',
+        'name',
         'price',
-        'is_active'
+        'is_active',
     ];
 
+    protected $attributes = [
+        'is_active' => 'active',
+    ];
+    protected $guarded = [];
+
+  
     
     public function servicedetail()
     {

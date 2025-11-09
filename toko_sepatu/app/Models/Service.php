@@ -9,6 +9,11 @@ class Service extends Model
 {
     
     use SoftDeletes;
+
+    protected $casts = [
+    'received_date' => 'datetime',
+    ];
+
     
     protected $guarded = [];
 

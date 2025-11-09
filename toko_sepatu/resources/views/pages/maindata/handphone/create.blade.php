@@ -1,92 +1,151 @@
 @extends('layouts.app')
 
+@section('content')
 <style>
-.container-new {
-    max-width: 1400px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 24px;
-    box-sizing: border-box;
-}
+    .card-fullscreen {
+        width: 1300px; /* kamu bisa ubah jadi 1400px jika ingin lebih lebar */
+        margin: 40px auto;
+        background-color: #1e1e2d;
+        color: #fff;
+        border-radius: 12px;
+        padding: 60px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .form-control-custom {
+        background-color: #2a2a3c;
+        border: none;
+        color: #fff;
+        border-radius: 8px;
+        padding: 12px 16px;
+        width: 100%;
+    }
+
+    .form-control-custom:focus {
+        outline: none;
+        background-color: #33334d;
+    }
+
+    .btn-submit {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 8px;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .btn-cancel {
+        background-color: #000;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 8px;
+        color: #fff;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+
+    .row-full {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .col-half {
+        flex: 1;
+        min-width: 48%;
+    }
 </style>
 
-@section('content')
-<form method="POST" action="/handphones/store" enctype="multipart/form-data">
-  @csrf
-  <div class="container-new">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Create Handphone</h4>
-
-            <!-- Model -->
-            <div class="form-group">
-              <label class="col-form-label">Model</label>
-              <input type="text" class="form-control" name="model" placeholder="Masukkan model handphone" required>
+<div class="card-fullscreen">
+    <h3>Create Handphone</h3>
+    <form id="handphoneForm" action="{{ route('handphones.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <br>
+        <br>
+        <div class="row-full">
+            <div class="col-half">
+                <label>Brand</label>
+                <input type="text" id="brand" name="brand" class="form-control-custom" placeholder="Masukkan merek handphone" required>
             </div>
 
-            <!-- Brand -->
-            <div class="form-group">
-              <label class="col-form-label">Brand</label>
-              <input type="text" class="form-control" name="brand" placeholder="Masukkan merek handphone" required>
+            <div class="col-half">
+                <label>Model</label>
+                <input type="text" id="model" name="model" class="form-control-custom" placeholder="Masukkan model handphone" required>
             </div>
 
-            <!-- Tahun Rilis (Select Dropdown) -->
-            <div class="form-group">
-              <label class="col-form-label">Release Year</label>
-              <select class="form-control" id="release_year" name="release_year" required>
-                <option value="">Pilih tahun rilis</option>
-              </select>
+            <div class="col-half">
+                <label>Release Year</label>
+                <select name="release_year" class="form-control-custom" required>
+                    <option value="">Pilih tahun rilis</option>
+                    @for ($i = date('Y'); $i >= 2000; $i--)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                    @endfor
+                </select>
             </div>
 
-            <!-- Upload Foto -->
-            <div class="form-group">
-              <label class="col-form-label">Foto</label>
-              <div class="row g-2">
-                <div class="col-9">
-                  <label for="image" class="form-control mb-0 d-flex align-items-center" style="cursor:pointer;">
-                    <span id="file-name-label">Upload Foto</span>
-                  </label>
+            <div class="col-half">
+              <div class="form-group">
+                <label class="col-form-label">Foto</label>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label for="image" class="form-control mb-0 d-flex align-items-center" style="cursor:pointer;">
+                      <span id="file-name-label">Upload Foto</span>
+                    </label>
+                  </div>
+                  <div class="col-6">
+                    <input type="text" id="file-name-display" class="form-control" readonly placeholder="No file">
+                  </div>
                 </div>
-                <div class="col-3">
-                  <input type="text" id="file-name-display" class="form-control" readonly placeholder="No file">
-                </div>
+                <input type="file" id="image" name="image" style="display:none;"
+                  onchange="(function(f){ 
+                    document.getElementById('file-name-label').textContent = f?.name || 'Upload Foto'; 
+                    document.getElementById('file-name-display').value = f?.name || ''; 
+                  })(this.files[0]);">
               </div>
-              <input type="file" id="image" name="image" style="display:none;"
-                onchange="(function(f){ 
-                  document.getElementById('file-name-label').textContent = f?.name || 'Upload Foto'; 
-                  document.getElementById('file-name-display').value = f?.name || ''; 
-                })(this.files[0]);">
             </div>
-
-            <input type="hidden" name="is_active" value="active">
-
-            <div class="mt-3">
-              <button type="submit" class="btn btn-primary mr-2">Submit</button>
-              <button type="reset" class="btn btn-dark">Cancel</button>
-            </div>
-
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</form>
 
-<!-- JS: Buat dropdown tahun otomatis -->
+        <div id="duplicate-warning" style="display:none; color:red; margin-top:10px;">
+            Data dengan brand dan model yang sama sudah ada!
+        </div>
+
+        <div style="margin-top: 24px;">
+            <button type="submit" id="submitBtn" class="btn-submit">Submit</button>
+            <a href="{{ route('handphones.index') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const select = document.getElementById('release_year');
-    const currentYear = new Date().getFullYear();
-    const startYear = 1990; // bisa diubah sesuai kebutuhan
+    // Cek duplikasi brand & model dengan AJAX
+    document.getElementById('brand').addEventListener('input', checkDuplicate);
+    document.getElementById('model').addEventListener('input', checkDuplicate);
 
-    for (let year = currentYear; year >= startYear; year--) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        select.appendChild(option);
+    function checkDuplicate() {
+        const brand = document.getElementById('brand').value;
+        const model = document.getElementById('model').value;
+
+        if (brand && model) {
+            fetch("{{ route('handphones.checkDuplicate') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ brand, model })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.duplicate) {
+                    document.getElementById('duplicate-warning').style.display = 'block';
+                    document.getElementById('submitBtn').disabled = true;
+                } else {
+                    document.getElementById('duplicate-warning').style.display = 'none';
+                    document.getElementById('submitBtn').disabled = false;
+                }
+            });
+        }
     }
-});
 </script>
 @endsection

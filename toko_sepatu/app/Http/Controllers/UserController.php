@@ -5,61 +5,70 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    // Display all users
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->search.'%')
+                  ->orWhere('email', 'like', '%'.$request->search.'%')
+                  ->orWhere('phonenumber', 'like', '%'.$request->search.'%');
+            });
+        }
+
+        if ($request->filled('role') && $request->role !== 'all') {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->orderBy('id', 'desc')->paginate(5);
+
         return view('pages.maindata.user.index', compact('users'));
     }
 
-    // Show form to create a new user
     public function create()
     {
         return view('pages.maindata.user.create');
     }
 
-    // Store a new user
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'adress' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phonenumber' => 'required|string|max:20|unique:users,phonenumber',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,technician,customer',
-            'is_active' => 'required|in:active,inactive',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'adress' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'phonenumber' => 'required|string|max:20|unique:users,phonenumber',
+                'password' => 'required|string|min:6',
+                'role' => 'required|in:admin,technician,customer',
+                'is_active' => 'required|in:active,inactive',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
 
-        // ✅ Jalankan hanya kalau ada file gambar
-        $path = null;
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('user', 'public');
+            $path = $request->hasFile('image')
+                ? $request->file('image')->store('user', 'public')
+                : null;
+
+            User::create([
+                'name' => $request->name,
+                'adress' => $request->adress,
+                'email' => $request->email,
+                'phonenumber' => $request->phonenumber,
+                'password' => bcrypt($request->password),
+                'role' => $request->role,
+                'is_active' => $request->is_active,
+                'image' => $path,
+            ]);
+
+            return redirect()->route('users.index')->with('success', '✅ User berhasil dibuat.');
+        } catch (\Exception $e) {
+            Log::error('Gagal membuat user: '.$e->getMessage());
+            return redirect()->back()->with('error', '❌ Gagal membuat user.');
         }
-
-        User::create([
-            'name' => $request->name,
-            'adress' => $request->adress,
-            'email' => $request->email,
-            'phonenumber' => $request->phonenumber,    
-            'password' => bcrypt($request->password),
-            'role' => $request->role,
-            'is_active' => $request->is_active,
-            'image' => $path, // bisa null kalau tidak ada foto
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
-    }
-
-    // Show a single user
-    public function show($id)
-    {
-        $user = User::findOrFail($id);
-        return view('pages.maindata.user.detail', compact('user'));
     }
 
     public function edit($id)
@@ -68,56 +77,84 @@ class UserController extends Controller
         return view('pages.maindata.user.edit', compact('user'));
     }
 
-    // Update user
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        try {
+            $user = User::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'adress' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$user->id,
-            'phonenumber' => 'required|string|max:20|unique:users,phonenumber,'.$user->id,
-            'role' => 'required|in:admin,technician,customer',
-            'is_active' => 'required|in:active,inactive',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'password' => 'nullable|min:6',
-        ]);
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'adress' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,'.$user->id,
+                'phonenumber' => 'required|string|max:20|unique:users,phonenumber,'.$user->id,
+                'role' => 'required|in:admin,technician,customer',
+                'is_active' => 'required|in:active,inactive',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'password' => 'nullable|min:6',
+            ]);
 
-        // ✅ Jalankan hanya kalau ada file baru
-        if ($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
+                if ($user->image && Storage::disk('public')->exists($user->image)) {
+                    Storage::disk('public')->delete($user->image);
+                }
+                $path = $request->file('image')->store('user', 'public');
+                $user->image = $path;
+            }
+
+            $user->update([
+                'name' => $request->name,
+                'adress' => $request->adress,
+                'phonenumber' => $request->phonenumber,
+                'email' => $request->email,
+                'role' => $request->role,
+                'is_active' => $request->is_active,
+                'password' => $request->filled('password') ? bcrypt($request->password) : $user->password,
+            ]);
+
+            return redirect()->route('users.index')->with('success', '✅ User berhasil diperbarui.');
+        } catch (\Exception $e) {
+            Log::error('Gagal mengupdate user: '.$e->getMessage());
+            return redirect()->back()->with('error', '❌ Gagal mengupdate user.');
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
-            $path = $request->file('image')->store('user', 'public');
-            $user->image = $path;
+
+            $user->delete();
+
+            return redirect()->route('users.index')->with('success', '🗑️ User berhasil dihapus.');
+        } catch (\Exception $e) {
+            Log::error('Gagal menghapus user: '.$e->getMessage());
+            return redirect()->back()->with('error', '❌ Gagal menghapus user.');
         }
-
-        // Update data lainnya
-        $user->update([
-            'name' => $request->name,
-            'adress' => $request->adress,
-            'phonenumber' => $request->phonenumber,
-            'email' => $request->email,
-            'role' => $request->role,
-            'is_active' => $request->is_active,
-            'password' => $request->filled('password') ? bcrypt($request->password) : $user->password,
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
-    // Delete user
-    public function destroy($id)
+    public function toggleStatus($id)
+    {
+        Log::info('toggleStatus dipanggil untuk user ID: ' . $id);
+
+        $user = User::findOrFail($id);
+        $user->is_active = $user->is_active === 'active' ? 'inactive' : 'active';
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'is_active' => $user->is_active,
+            'color' => $user->is_active === 'active' ? 'text-success' : 'text-danger',
+        ]);
+    }
+
+    public function show($id)
     {
         $user = User::findOrFail($id);
-
-        if ($user->image && Storage::disk('public')->exists($user->image)) {
-            Storage::disk('public')->delete($user->image);
-        }
-
-        $user->delete();
-
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return view('pages.maindata.user.detail', compact('user'));
     }
+
 }

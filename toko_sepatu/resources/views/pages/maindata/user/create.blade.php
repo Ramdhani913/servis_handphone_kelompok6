@@ -1,22 +1,37 @@
 @extends('layouts.app')
 <style>
-    .container-new {
-    max-width: 1400px; /* wider than bootstrap container */
+.container-new {
+    max-width: 100%; /* ubah dari 1400px ke full width */
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
     padding-left: 24px;
     padding-right: 24px;
     box-sizing: border-box;
 }
+
+/* buat kolom kiri dan kanan lebih proporsional di layar lebar */
+.col-18-9 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 15px;
+}
+
+/* biar kolom responsif di layar kecil */
+@media (max-width: 992px) {
+  .col-18-9 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
 </style>
+
 @section('content')
 <form method="POST" action="/users/store" enctype="multipart/form-data">
   @csrf
   <div class="container-new">
     <div class="row">
-      {{-- left column (slightly narrower now) --}}
-      <div class="col-lg-6 col-md-6 grid-margin stretch-card">
+      {{-- left column --}}
+      <div class="col-18-9 col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">User Info</h4>
@@ -45,8 +60,8 @@
         </div>
       </div>
 
-      {{-- right column (wider now) --}}
-      <div class="col-lg-6 col-md-6 grid-margin stretch-card">
+      {{-- right column --}}
+      <div class="col-18-9 col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Account</h4>
@@ -69,20 +84,18 @@
               <label class="col-form-label">Foto</label>
               <div class="row g-2">
                 <div class="col-9">
-                  <!-- clickable area styled like other inputs (acts as upload) -->
                   <label for="image" class="form-control mb-0 d-flex align-items-center" style="cursor:pointer;">
                     <span id="file-name-label">Upload Foto</span>
                   </label>
                 </div>
-                  <div class="col-1">
-                    <!-- filename display, same style/size as other inputs -->
-                    <input type="text" id="file-name-display" class="form-control" readonly placeholder="No file">
-                  </div>
+                <div class="col-1">
+                  <input type="text" id="file-name-display" class="form-control" readonly placeholder="No file">
                 </div>
-
-                <input type="file" id="image" name="image" style="display:none;"
-                  onchange="(function(f){ document.getElementById('file-name-label').textContent = f?.name || 'Upload Foto'; document.getElementById('file-name-display').value = f?.name || ''; })(this.files[0]);">
               </div>
+
+              <input type="file" id="image" name="image" style="display:none;"
+                onchange="(function(f){ document.getElementById('file-name-label').textContent = f?.name || 'Upload Foto'; document.getElementById('file-name-display').value = f?.name || ''; })(this.files[0]);">
+            </div>
 
             <input type="hidden" name="is_active" value="active">
 
