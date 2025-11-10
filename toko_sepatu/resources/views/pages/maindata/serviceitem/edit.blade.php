@@ -1,46 +1,153 @@
 @extends('layouts.app')
-<style>
-    .container-new {
-    max-width: 1400px; /* wider than bootstrap container */
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 24px;
-    padding-right: 24px;
-    box-sizing: border-box;
-}
-</style>
 
 @section('content')
-    <form action="/serviceitems/{{ $serviceitem->id }}/update" method="POST">
-      @csrf
-         <div class="container-new">
-    <div class="row">
-      {{-- left column (slightly narrower now) --}}
-      <div class="col-lg-12 col-md-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Create Service item</h4>
+    <style>
+        body {
+            background-color: #12121c;
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">Name</label>
-              <input type="text" class="form-control" name="service_name" value="{{ old('service_name', $serviceitem->service_name) }}" required>
+        .container-new {
+            max-width: auto;
+            width: 100%;
+            margin: 40px auto;
+            padding: 100px 24px;
+            box-sizing: border-box;
+        }
+
+        .card-fullscreen {
+            background-color: #1e1e2d;
+            color: #fff;
+            border-radius: 12px;
+            padding: 50px 50px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-fullscreen h4 {
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            background-color: #26263b;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1rem;
+        }
+
+        .form-control::placeholder {
+            color: #aaa;
+        }
+
+        .btn-primary {
+            background-color: #6c63ff;
+            border: none;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a52e0;
+        }
+
+        .btn-dark {
+            background-color: #333;
+            border: none;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: 0.3s;
+            color: #fff;
+            margin-left: 10px;
+        }
+
+        .btn-dark:hover {
+            background-color: #555;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .card-fullscreen {
+                padding: 20px 20px;
+            }
+
+            .btn-primary,
+            .btn-dark {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+
+    <div class="container-new">
+        <form action="{{ route('serviceitems.update', $serviceitem->id) }}" method="POST">
+            @csrf
+            <div class="card-fullscreen">
+                <h4>Edit Service Item</h4>
+
+                <div class="form-group">
+                    <label class="col-form-label">Name</label>
+                    <input type="text" class="form-control" name="service_name" placeholder="Service name" value="{{ old('service_name', $serviceitem->service_name) }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label">Price</label>
+                    <input type="text" id="price" class="form-control" name="price" value="{{ old('price', 'Rp.' . number_format($serviceitem->price, 0, ',', '.')) }}" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a href="{{ route('serviceitems.index') }}">
+                        <button type="button" class="btn btn-dark">Cancel</button>
+                    </a>
+                </div>
             </div>
-
-            <div class="form-group">
-              <label class="col-form-label">Price</label>
-              <input type="text" class="form-control" name="price" value="{{ old('price', $serviceitem->price) }}" required>
-            </div>
-
-             <div class="mt-3">
-              <button type="submit" class="btn btn-primary mr-2">Submit</button>
-              <button type="reset" class="btn btn-dark">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+        </form>
     </div>
-  </div>
-    </form>
+
+    <script>
+        $(document).ready(function() {
+            var priceInput = $('#price');
+
+            priceInput.focus(function() {
+                var val = $(this).val().replace(/\D/g, '');
+                if (val === '0' || val === '') {
+                    $(this).val('Rp.');
+                }
+            });
+
+            priceInput.blur(function() {
+                var val = $(this).val().replace(/\D/g, '');
+                if (val === '') val = '0';
+                $(this).val('Rp.' + Number(val).toLocaleString('id-ID'));
+            });
+
+            priceInput.on('input', function() {
+                var val = $(this).val().replace(/\D/g, '');
+                if (val === '') {
+                    $(this).val('Rp.');
+                } else {
+                    $(this).val('Rp.' + Number(val).toLocaleString('id-ID'));
+                }
+            });
+        });
+    </script>
 @endsection
