@@ -1,1 +1,0 @@
-<?php /**PATH C:\Users\rendr\Desktop\desktop\service_hp_aseli\resources\views\pages\maindata\sales\index.blade.php ENDPATH**/ ?>
