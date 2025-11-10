@@ -1,0 +1,1 @@
+<?php /**PATH C:\Users\rendr\Desktop\desktop\service_hp_aseli\resources\views\pages\maindata\service\index.blade.php ENDPATH**/ ?>
