@@ -22,8 +22,7 @@ Route::get('/', function () {
     return view('pages.dashboard.index');
 });
 
-// ===== ROUTE UNTUK USER =====
->>>>>>> 0cdab11c69774ac7f57a244149b56b3da6621235
+// ===== ROUTE UNTUK USER =====>>>>>>> 0cdab11c69774ac7f57a244149b56b3da6621235
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
