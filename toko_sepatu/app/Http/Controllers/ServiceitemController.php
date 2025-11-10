@@ -8,23 +8,21 @@ use Illuminate\Http\Request;
 class ServiceitemController extends Controller
 {
     // ✅ Tampilkan daftar service item dengan pagination dan pencarian
-   public function index(Request $request)
+    public function index(Request $request)
     {
         $query = Serviceitem::query();
 
         if ($request->has('search') && $request->search !== '') {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('service_name', 'like', '%' . $request->search . '%');
         }
 
+        // Pagination Laravel standar
         $serviceitems = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        // Jika permintaan AJAX (search/pagination)
-        if ($request->ajax()) {
-            return view('pages.maindata.serviceitem.table', compact('serviceitems'))->render();
-        }
-
+        // Tidak perlu cek AJAX karena reload page
         return view('pages.maindata.serviceitem.index', compact('serviceitems'));
     }
+
 
     public function toggleStatus($id)
     {
@@ -43,8 +41,10 @@ class ServiceitemController extends Controller
         $item = Serviceitem::findOrFail($id);
         $item->delete();
 
-        return response()->json(['message' => 'Service item berhasil dihapus']);
+        return redirect()->route('serviceitems.index')
+            ->with('success', 'Service item berhasil dihapus.');
     }
+
 
     // ✅ Create
     public function create()
@@ -57,16 +57,20 @@ class ServiceitemController extends Controller
     {
         $request->validate([
             'service_name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|string', // tetap string dulu karena ada Rp.
         ]);
+
+        // Hapus semua selain angka dari input price
+        $price = preg_replace('/\D/', '', $request->price);
 
         Serviceitem::create([
             'service_name' => $request->service_name,
-            'price' => $request->price,
+            'price' => $price, // simpan sebagai integer
             'is_active' => 'active', // default aktif
         ]);
 
-        return redirect()->route('serviceitems.index')->with('success', 'Service item berhasil dibuat.');
+        return redirect()->route('serviceitems.index')
+            ->with('success', 'Service item berhasil dibuat.');
     }
 
     // ✅ Edit
@@ -81,16 +85,21 @@ class ServiceitemController extends Controller
     {
         $request->validate([
             'service_name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|string',
         ]);
 
         $serviceitem = Serviceitem::findOrFail($id);
+
+        // Hapus semua selain angka dari input price
+        $price = preg_replace('/\D/', '', $request->price);
+
         $serviceitem->update([
             'service_name' => $request->service_name,
-            'price' => $request->price,
+            'price' => $price,
         ]);
 
-        return redirect()->route('serviceitems.index')->with('success', 'Service item berhasil diperbarui.');
+        return redirect()->route('serviceitems.index')
+            ->with('success', 'Service item berhasil diperbarui.');
     }
 
     // ✅ Delete

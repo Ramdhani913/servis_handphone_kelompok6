@@ -8,12 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Serviceitem extends Model
 {
-use SoftDeletes;
-
-  use HasFactory;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
-        'name',
+        'service_name',
         'price',
         'is_active',
     ];
@@ -21,10 +19,7 @@ use SoftDeletes;
     protected $attributes = [
         'is_active' => 'active',
     ];
-    protected $guarded = [];
 
-  
-    
     public function servicedetail()
     {
         return $this->hasMany(Servicedetail::class, 'serviceitem_id');

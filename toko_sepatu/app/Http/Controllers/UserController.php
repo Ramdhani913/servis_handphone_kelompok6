@@ -46,7 +46,7 @@ class UserController extends Controller
                 'password' => 'required|string|min:6',
                 'role' => 'required|in:admin,technician,customer',
                 'is_active' => 'required|in:active,inactive',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png',
             ]);
 
             $path = $request->hasFile('image')
