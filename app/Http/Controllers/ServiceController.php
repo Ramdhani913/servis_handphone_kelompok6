@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Models\User;
 use App\Models\Handphone;
 use App\Models\Service;
@@ -257,3 +258,11 @@ public function destroy($id)
 
 
 }
+=======
+use Illuminate\Http\Request;
+
+class ServiceController extends Controller
+{
+    //
+}
+>>>>>>> 0cdab11c69774ac7f57a244149b56b3da6621235

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<<<<<<< HEAD
 
 <head>
     <!-- Required meta tags -->
@@ -8,6 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Corona Admin</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+=======
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Corona Admin</title>
+>>>>>>> 0cdab11c69774ac7f57a244149b56b3da6621235
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
@@ -19,7 +27,11 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/owl-carousel-2/owl.theme.default.min.css') }}">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
+<<<<<<< HEAD
     <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+=======
+     <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+>>>>>>> 0cdab11c69774ac7f57a244149b56b3da6621235
     <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
     <!-- endinject -->
     <!-- Plugin css for this page -->
@@ -38,6 +50,7 @@
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}">
     <style>
+<<<<<<< HEAD
         
         .full-bg {
             width: 100vw;
@@ -74,6 +87,35 @@
     </div>
     @include('layouts.footer')
     <!-- container-scroller -->
+=======
+      .full-bg {
+          width: 100vw;
+          min-height: 100vh;
+          margin-left: calc(-50vw + 50%);
+          margin-right: calc(-50vw + 50%);
+          background: #fff; /* Change to your desired background color */
+      } 
+      </style>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:partials/_sidebar.html -->
+     @include('layouts.sidebar')
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+       
+        @include('layouts.navbar')
+        <!-- partial -->
+       @yield('content')
+        <!-- main-panel ends --> 
+       
+      </div>
+      <!-- page-body-wrapper ends -->
+     
+    </div>
+     @include('layouts.footer')
+     <!-- container-scroller -->
+>>>>>>> 0cdab11c69774ac7f57a244149b56b3da6621235
     <!-- plugins:js -->
     <script src="assets/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->
@@ -94,6 +136,7 @@
     <!-- Custom js for this page -->
     <script src="assets/js/dashboard.js"></script>
     <!-- End custom js for this page -->
+<<<<<<< HEAD
 
 
 
@@ -217,3 +260,7 @@
 </body>
 
 </html>
+=======
+  </body>
+</html>
+>>>>>>> 0cdab11c69774ac7f57a244149b56b3da6621235
