@@ -28,10 +28,6 @@
             font-size: 1.5rem;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
         .form-control {
             background-color: #26263b;
             border: 1px solid #444;
@@ -104,13 +100,22 @@
             <div class="card-fullscreen">
                 <h4>Create Service Item</h4>
 
-                <div class="form-group">
-                    <label class="col-form-label">Name</label>
-                    <input type="text" class="form-control" name="service_name" placeholder="Service name" required>
-                </div>
-                <div class="form-group">
-                    <label class="col-form-label">Price</label>
-                    <input type="text" id="price" class="form-control" name="price" placeholder="Rp.0" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label">Name</label>
+                            <input type="text" class="form-control" name="service_name" placeholder="Service name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label">Price</label>
+                            <input type="text" id="price" class="form-control" name="price" placeholder="Rp.0"
+                                required>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-actions">
@@ -122,6 +127,7 @@
             </div>
         </form>
     </div>
+
     <script>
         $(document).ready(function() {
             var priceInput = $('#price');
@@ -152,11 +158,6 @@
                 } else {
                     $(this).val('Rp.' + Number(val).toLocaleString('id-ID'));
                 }
-            });
-
-            // Saat submit: tetap kirim value dengan Rp.
-            $('form').submit(function() {
-                // tidak menghapus Rp., value tetap "Rp.xxx"
             });
         });
     </script>

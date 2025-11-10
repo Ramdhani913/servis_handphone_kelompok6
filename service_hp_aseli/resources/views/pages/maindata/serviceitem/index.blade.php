@@ -6,38 +6,26 @@
             background-color: #12121c;
         }
 
-        .content-wrapper {
-            padding-top: 90px !important;
+        .container-new {
+            max-width: auto;
+            width: 100%;
+            margin: 40px auto;
+            padding: 100px 24px;
+            box-sizing: border-box;
         }
 
-        .card {
-            background-color: #1e1e2d !important;
-            border: none;
+        .card-fullscreen {
+            background-color: #1e1e2d;
+            color: #fff;
             border-radius: 12px;
-            color: #fff;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            padding: 50px 50px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-tambah {
-            background-color: #6c63ff;
-            color: #fff;
+        .card-fullscreen h4 {
             font-weight: 600;
-            border-radius: 8px;
-            padding: 10px 25px;
-            box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
-        }
-
-        .btn-tambah:hover {
-            background-color: #5a52e0;
-        }
-
-        .table tbody tr {
-            background-color: #26263b !important;
-            transition: background 0.2s ease;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #343453 !important;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
         }
 
         input#search {
@@ -53,6 +41,91 @@
             display: none;
             color: #6c63ff;
         }
+
+        .btn-tambah {
+            background-color: #6c63ff;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 10px 25px;
+            box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+            transition: 0.3s;
+        }
+
+        .btn-tambah:hover {
+            background-color: #5a52e0;
+        }
+
+        .table tbody tr {
+            background-color: #26263b !important;
+            transition: background 0.2s ease;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #343453 !important;
+        }
+
+        /* Pagination */
+        .pagination-wrapper {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-start;
+            /* kiri di desktop */
+        }
+
+        @media (max-width: 768px) {
+            .pagination-wrapper {
+                justify-content: center;
+                /* tengah di HP */
+            }
+        }
+
+        .pagination {
+            margin-bottom: 0;
+            gap: 0px;
+        }
+
+        .pagination .page-item {
+            margin: 0 3px;
+        }
+
+        .pagination .page-link {
+            background-color: #1f1f2f;
+            /* gelap lembut */
+            color: #cfcfff;
+            /* teks ungu muda */
+            border: 1px solid #33334d;
+            border-radius: 10px;
+            padding: 8px 14px;
+            transition: all 0.25s ease;
+            font-weight: 500;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .pagination .page-link:hover {
+            background-color: #6c63ff;
+            /* warna utama */
+            color: #fff;
+            border-color: #6c63ff;
+            box-shadow: 0 0 10px rgba(108, 99, 255, 0.6);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #7b74ff;
+            color: #fff;
+            border-color: #7b74ff;
+            font-weight: 600;
+            box-shadow: 0 0 12px rgba(123, 116, 255, 0.8);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: #2b2b3f;
+            color: #7777aa;
+            border-color: #2b2b3f;
+            opacity: 0.6;
+        }
+
+
 
         .btn-edit {
             background-color: #f5b400;
@@ -84,30 +157,32 @@
         }
     </style>
 
-    <div class="container-fluid grid-margin stretch-card content-wrapper">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-                    <h4 class="card-title mb-0 text-white">Table Service Item</h4>
-                    <a href="{{ route('serviceitems.create') }}" class="btn btn-tambah mt-2 mt-md-0">
-                        <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Service Item
-                    </a>
+    {{-- ====== CONTENT (struktur disesuaikan biar sama tampilan create) ====== --}}
+    <div class="container-new">
+        <div class="card-fullscreen">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                <h4 class="mb-0">Table Service Item</h4>
+                <a href="{{ route('serviceitems.create') }}" class="btn btn-tambah mt-2 mt-md-0">
+                    <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Service Item
+                </a>
+            </div>
+
+            <div class="d-flex align-items-center mb-4">
+                <input type="text" id="search" placeholder="Cari nama service..." />
+                <span class="spinner ms-2"><i class="mdi mdi-loading mdi-spin"></i></span>
+            </div>
+
+            <div id="serviceTable">
+                @include('pages.maindata.serviceitem.table', ['serviceitems' => $serviceitems])
+                <div class="pagination-wrapper">
+                    {{ $serviceitems->links('pagination::bootstrap-4') }}
                 </div>
 
-                <div class="d-flex align-items-center mb-4">
-                    <input type="text" id="search" placeholder="Cari nama service..." />
-                    <span class="spinner ms-2"><i class="mdi mdi-loading mdi-spin"></i></span>
-                </div>
-
-                <div id="serviceTable">
-                    @include('pages.maindata.serviceitem.table', ['serviceitems' => $serviceitems])
-                    <!-- Pagination Laravel -->
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- SweetAlert notifikasi flash session -->
+    {{-- ====== SweetAlert Notif ====== --}}
     @if (session('success'))
         <script>
             Swal.fire({
@@ -132,6 +207,7 @@
         </script>
     @endif
 
+    {{-- ====== Script AJAX (TIDAK DIUBAH SAMA SEKALI) ====== --}}
     <script>
         $.ajaxSetup({
             headers: {
@@ -185,28 +261,28 @@
                 });
             });
 
+            // Delete confirm
             $(document).ready(function() {
                 $('.btn-delete').click(function(e) {
                     e.preventDefault();
-                    let form = $(this).closest('form'); // ambil form induk
-                    let name = $(this).data('name'); // ambil nama service item
+                    let form = $(this).closest('form');
+                    let name = $(this).data('name');
 
                     Swal.fire({
                         title: 'Hapus "' + name + '"?',
                         text: 'Data akan hilang permanen!',
-                        icon: 'warning', // pakai icon standar
+                        icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#e74c3c',
                         cancelButtonColor: '#6c63ff',
                         confirmButtonText: 'Ya, hapus',
                         cancelButtonText: 'Batal',
                         reverseButtons: true,
-                        // tambahkan ini biar modal fix padding
                         padding: '1.5rem',
                         heightAuto: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            form.submit(); // submit form jika konfirmasi
+                            form.submit();
                         }
                     });
                 });

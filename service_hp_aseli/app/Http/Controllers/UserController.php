@@ -25,7 +25,7 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
-        $users = $query->orderBy('id', 'desc')->paginate(5);
+        $users = $query->orderBy('id', 'desc')->paginate(10);
 
         return view('pages.maindata.user.index', compact('users'));
     }
@@ -64,10 +64,10 @@ class UserController extends Controller
                 'image' => $path,
             ]);
 
-            return redirect()->route('users.index')->with('success', '✅ User berhasil dibuat.');
+            return redirect()->route('users.index')->with('success', ' User berhasil dibuat.');
         } catch (\Exception $e) {
             Log::error('Gagal membuat user: '.$e->getMessage());
-            return redirect()->back()->with('error', '❌ Gagal membuat user.');
+            return redirect()->back()->with('error', ' Gagal membuat user.');
         }
     }
 
@@ -111,10 +111,10 @@ class UserController extends Controller
                 'password' => $request->filled('password') ? bcrypt($request->password) : $user->password,
             ]);
 
-            return redirect()->route('users.index')->with('success', '✅ User berhasil diperbarui.');
+            return redirect()->route('users.index')->with('success', ' User berhasil diperbarui.');
         } catch (\Exception $e) {
             Log::error('Gagal mengupdate user: '.$e->getMessage());
-            return redirect()->back()->with('error', '❌ Gagal mengupdate user.');
+            return redirect()->back()->with('error', ' Gagal mengupdate user.');
         }
     }
 
@@ -129,10 +129,10 @@ class UserController extends Controller
 
             $user->delete();
 
-            return redirect()->route('users.index')->with('success', '🗑️ User berhasil dihapus.');
+            return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
         } catch (\Exception $e) {
             Log::error('Gagal menghapus user: '.$e->getMessage());
-            return redirect()->back()->with('error', '❌ Gagal menghapus user.');
+            return redirect()->back()->with('error', ' Gagal menghapus user.');
         }
     }
 

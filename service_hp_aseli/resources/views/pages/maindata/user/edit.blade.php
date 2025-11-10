@@ -1,120 +1,245 @@
 @extends('layouts.app')
-<style>
-    .container-new {
-    max-width: 1400px; /* wider than bootstrap container */
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 24px;
-    padding-right: 24px;
-    box-sizing: border-box;
 
-     .user-photo {
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-  }
-
-  .user-photo img {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 2px solid #3f3f55;
-    object-fit: cover;
-  }
-}
-</style>
 @section('content')
-<form method="POST" action="/users/{{ $user->id }}/update" enctype="multipart/form-data">
-  @csrf
-  <div class="container-new">
-    <div class="row">
-    
-      {{-- left column (slightly narrower now) --}}
-      <div class="col-lg-6 col-md-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Edit User</h4>
-                  
-            <div class="user-photo">
-              <img src="{{ asset('storage/'. $user->image) }}" alt="User Photo">
-            </div>
+    {{-- STYLE KHUSUS UPLOAD FOTO --}}
+    <style>
+        .file-upload-wrapper {
+            background-color: #26263b;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">Username</label>
-              <input type="text" class="form-control" name="name" Value="{{ old('name', $user->name) }}" required>
-            </div>
+        .file-upload-btn {
+            background-color: #6c63ff;
+            color: #fff;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">Alamat</label>
-              <input type="text" class="form-control" name="adress" value="{{ old('adress', $user->adress) }}" required>
-            </div>
+        .file-upload-btn:hover {
+            background-color: #5a52e0;
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">Email</label>
-              <input type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required>
-            </div>
+        .file-name {
+            color: #ccc;
+            font-size: 0.95rem;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">No Handphone</label>
-              <input type="text" class="form-control" name="phonenumber" value="{{ old('phonenumber', $user->phonenumber) }}" required>
-            </div>
+        /* ==== STYLE UMUM ==== */
+        body {
+            background-color: #12121c;
+        }
 
-          </div>
-        </div>
-      </div>
+        .container-new {
+            width: 100%;
+            margin: 40px auto;
+            padding: 50px 24px;
+            box-sizing: border-box;
+        }
 
-      {{-- right column (wider now) --}}
-      <div class="col-lg-6 col-md-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Account</h4>
+        .card-fullscreen {
+            background-color: #1e1e2d;
+            color: #fff;
+            border-radius: 12px;
+            padding: 40px 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">Password</label>
-              <input type="password" class="form-control" name="password" placeholder="Password">
-            </div>
+        .card-fullscreen h4 {
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">Role</label>
-              <select class="form-control" name="role" required value="{{ old('role', $user->role) }}">
-                <option value="admin">Admin</option>
-                <option value="technician">Technician</option>
-                <option value="customer">Customer</option>
-              </select>
-            </div>
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-            <div class="form-group">
-              <label class="col-form-label">Foto</label>
-              <div class="row g-2">
-                <div class="col-9">
-                  <!-- clickable area styled like other inputs (acts as upload) -->
-                  <label for="image" class="form-control mb-0 d-flex align-items-center" style="cursor:pointer;">
-                    <span id="file-name-label">Upload Foto</span>
-                  </label>
+        .form-control {
+            background-color: #26263b;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1rem;
+        }
+
+        .form-control::placeholder {
+            color: #aaa;
+        }
+
+        .btn-primary {
+            background-color: #6c63ff;
+            border: none;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a52e0;
+        }
+
+        .btn-dark {
+            background-color: #333;
+            border: none;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: 0.3s;
+            color: #fff;
+            margin-left: 10px;
+        }
+
+        .btn-dark:hover {
+            background-color: #555;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .user-photo {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-photo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #3f3f55;
+            object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            .card-fullscreen {
+                padding: 20px 20px;
+            }
+
+            .btn-primary,
+            .btn-dark {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <div class="container-new">
+        <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
+            @csrf
+            <div class="card-fullscreen">
+                <h4>Edit User</h4>
+                <div class="row">
+                    {{-- FOTO DI KIRI ATAS --}}
+                    <div class="user-photo col-md-12">
+                        <img id="preview-photo"
+                            src="{{ $user->image ? asset('storage/' . $user->image) : asset('images/default-user.png') }}"
+                            alt="User Photo">
+                    </div>
+
+                    {{-- LEFT COLUMN --}}
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" class="form-control" name="name" value="{{ old('name', $user->name) }}"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat</label>
+                            <input type="text" class="form-control" name="adress"
+                                value="{{ old('adress', $user->adress) }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email"
+                                value="{{ old('email', $user->email) }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>No Handphone</label>
+                            <input type="text" class="form-control" name="phonenumber"
+                                value="{{ old('phonenumber', $user->phonenumber) }}" required>
+                        </div>
+                    </div>
+
+                    {{-- RIGHT COLUMN --}}
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Password (kosongkan jika tidak ingin ganti)</label>
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select class="form-control" name="role" required>
+                                <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin
+                                </option>
+                                <option value="technician" {{ old('role', $user->role) == 'technician' ? 'selected' : '' }}>
+                                    Technician</option>
+                                <option value="customer" {{ old('role', $user->role) == 'customer' ? 'selected' : '' }}>
+                                    Customer</option>
+                            </select>
+                        </div>
+
+                        {{-- FILE INPUT --}}
+                        <div class="form-group">
+                            <label>Foto</label>
+                            <div class="file-upload-wrapper">
+                                <label for="image" class="file-upload-btn mb-0">Pilih Foto</label>
+                                <span id="file-name-label" class="file-name text-truncate">Belum ada file</span>
+                                <input type="file" id="image" name="image" accept="image/*" style="display:none;">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="is_active" value="{{ $user->is_active }}">
+                    </div>
                 </div>
-                <div class="col-3">
-                  <!-- filename display, same style/size as other inputs -->
-                  <input type="text" id="file-name-display" class="form-control" readonly placeholder="No file">
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="{{ route('users.index') }}" class="btn btn-dark">Cancel</a>
                 </div>
-              </div>
-
-              <input type="file" id="image" name="image" style="display:none;"
-                onchange="(function(f){ document.getElementById('file-name-label').textContent = f?.name || 'Upload Foto'; document.getElementById('file-name-display').value = f?.name || ''; })(this.files[0]);">
             </div>
-
-            <input type="hidden" name="is_active" value="active">
-
-            <div class="mt-3">
-              <button type="submit" class="btn btn-primary mr-2">Submit</button>
-              <button type="reset" class="btn btn-dark">Cancel</button>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
+        </form>
     </div>
-  </div>
-</form>
+
+    {{-- SCRIPT PREVIEW GAMBAR DAN NAMA FILE --}}
+    <script>
+        const imageInput = document.getElementById('image');
+        const preview = document.getElementById('preview-photo');
+        const fileNameLabel = document.getElementById('file-name-label');
+
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                fileNameLabel.textContent = file.name;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileNameLabel.textContent = 'Belum ada file';
+            }
+        });
+    </script>
 @endsection

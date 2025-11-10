@@ -1,3 +1,4 @@
+
 <table class="table table-hover text-white">
     <thead>
         <tr>
@@ -11,7 +12,7 @@
     <tbody>
         @forelse($serviceitems as $item)
             <tr>
-                <td>{{ $loop->iteration }}</td>
+                <td>{{ $serviceitems->firstItem() + $loop->index }}</td>
                 <td>{{ $item->service_name }}</td>
                 <td>Rp {{ number_format($item->price, 0, ',', '.') }}</td>
                 <td>
@@ -39,3 +40,4 @@
         @endforelse
     </tbody>
 </table>
+
