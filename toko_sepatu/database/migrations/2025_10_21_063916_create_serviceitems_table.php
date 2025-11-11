@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('price');
             $table->enum('is_active', ['active', 'inactive'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

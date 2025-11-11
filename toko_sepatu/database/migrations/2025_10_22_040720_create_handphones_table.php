@@ -18,6 +18,7 @@ return new class extends Migration
             $table->year('release_year');
             $table->enum('is_active', ['active', 'inactive'])->default('active');
             $table->string('image');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
