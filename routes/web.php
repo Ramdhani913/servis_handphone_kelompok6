@@ -28,6 +28,7 @@ Route::get('/serviceitems/{id}/edit', [ServiceitemController::class, 'edit'])->n
 Route::post('/serviceitems/{id}/update', [ServiceitemController::class, 'update'])->name('serviceitems.update');
 Route::delete('/serviceitems/{id}/delete', [ServiceitemController::class, 'destroy'])->name('serviceitems.destroy');
 Route::post('serviceitems/{id}/toggle-status', [ServiceitemController::class, 'toggleStatus'])->name('serviceitems.toggle');
+Route::get('/serviceitems/{id}', [ServiceitemController::class, 'show'])->name('serviceitems.show');
 
 // Handphone Routes
 Route::get('/handphones/create', [HandphoneController::class, 'create'])->name('handphones.create');

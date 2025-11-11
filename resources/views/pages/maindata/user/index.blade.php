@@ -166,7 +166,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
                 <h4 class="mb-0">Table User</h4>
                 <a href="{{ route('users.create') }}" class="btn btn-tambah mt-2 mt-md-0">
-                    <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah User
+                    <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Data
                 </a>
             </div>
 
@@ -323,4 +323,30 @@
             });
         });
     </script>
+    {{-- SWEET ALERT --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    @endif
 @endsection

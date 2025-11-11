@@ -95,7 +95,7 @@
     </style>
 
     <div class="container-new">
-        <form action="/serviceitems/store" method="POST">
+        <form action="{{ route('serviceitems.store') }}" method="POST">
             @csrf
             <div class="card-fullscreen">
                 <h4>Create Service Item</h4>

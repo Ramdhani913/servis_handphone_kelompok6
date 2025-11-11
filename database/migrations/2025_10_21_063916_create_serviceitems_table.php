@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('serviceitems', function (Blueprint $table) {
             $table->id();
-            $table->string('service_name');
+            $table->string('service_name')->unique();
             $table->integer('price');
             $table->enum('is_active', ['active', 'inactive'])->default('active');
             $table->timestamps();
