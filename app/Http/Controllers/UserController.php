@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -14,10 +16,10 @@ class UserController extends Controller
         $query = User::query();
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->search.'%')
-                  ->orWhere('email', 'like', '%'.$request->search.'%')
-                  ->orWhere('phonenumber', 'like', '%'.$request->search.'%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('email', 'like', '%' . $request->search . '%')
+                    ->orWhere('phonenumber', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -35,6 +37,7 @@ class UserController extends Controller
         return view('pages.maindata.user.create');
     }
 
+
     public function store(Request $request)
     {
         try {
@@ -43,7 +46,7 @@ class UserController extends Controller
                 'adress' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'phonenumber' => 'required|string|max:20|unique:users,phonenumber',
-                'password' => 'required|string|min:6',
+                'password' => 'required|string',
                 'role' => 'required|in:admin,technician,customer',
                 'is_active' => 'required|in:active,inactive',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png',
@@ -64,12 +67,19 @@ class UserController extends Controller
                 'image' => $path,
             ]);
 
-            return redirect()->route('users.index')->with('success', ' User berhasil dibuat.');
+            return redirect()->route('users.index')->with('success', 'User berhasil dibuat.');
+        } catch (ValidationException $ve) {
+            // Ambil pesan error validasi (misal duplikat email/phone)
+            $messages = $ve->validator->errors()->all();
+            $errorText = implode('<br>', $messages);
+
+            return redirect()->route('users.index')->with('error', $errorText);
         } catch (\Exception $e) {
-            Log::error('Gagal membuat user: '.$e->getMessage());
-            return redirect()->back()->with('error', ' Gagal membuat user.');
+            Log::error('Gagal membuat user: ' . $e->getMessage());
+            return redirect()->route('users.index')->with('error', 'Gagal membuat user.');
         }
     }
+
 
     public function edit($id)
     {
@@ -85,8 +95,8 @@ class UserController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'adress' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,'.$user->id,
-                'phonenumber' => 'required|string|max:20|unique:users,phonenumber,'.$user->id,
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'phonenumber' => 'required|string|max:20|unique:users,phonenumber,' . $user->id,
                 'role' => 'required|in:admin,technician,customer',
                 'is_active' => 'required|in:active,inactive',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -111,10 +121,15 @@ class UserController extends Controller
                 'password' => $request->filled('password') ? bcrypt($request->password) : $user->password,
             ]);
 
-            return redirect()->route('users.index')->with('success', ' User berhasil diperbarui.');
+            return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
+        } catch (ValidationException $ve) {
+            $messages = $ve->validator->errors()->all();
+            $errorText = implode('<br>', $messages);
+
+            return redirect()->route('users.index')->with('error', $errorText);
         } catch (\Exception $e) {
-            Log::error('Gagal mengupdate user: '.$e->getMessage());
-            return redirect()->back()->with('error', ' Gagal mengupdate user.');
+            Log::error('Gagal mengupdate user: ' . $e->getMessage());
+            return redirect()->route('users.index')->with('error', 'Gagal mengupdate user.');
         }
     }
 
@@ -131,8 +146,8 @@ class UserController extends Controller
 
             return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
         } catch (\Exception $e) {
-            Log::error('Gagal menghapus user: '.$e->getMessage());
-            return redirect()->back()->with('error', ' Gagal menghapus user.');
+            Log::error('Gagal menghapus user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus user.');
         }
     }
 
@@ -156,5 +171,4 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         return view('pages.maindata.user.detail', compact('user'));
     }
-
 }

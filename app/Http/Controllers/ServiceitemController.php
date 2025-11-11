@@ -52,7 +52,6 @@ class ServiceitemController extends Controller
         return view('pages.maindata.serviceitem.create');
     }
 
-    // ✅ Store
     public function store(Request $request)
     {
         $request->validate([
@@ -63,15 +62,28 @@ class ServiceitemController extends Controller
         // Hapus semua selain angka dari input price
         $price = preg_replace('/\D/', '', $request->price);
 
-        Serviceitem::create([
-            'service_name' => $request->service_name,
-            'price' => $price, // simpan sebagai integer
-            'is_active' => 'active', // default aktif
-        ]);
+        // ✅ Cek duplikat sebelum insert
+        $exists = Serviceitem::where('service_name', $request->service_name)->exists();
+        if ($exists) {
+            return redirect()->route('serviceitems.index')
+                ->with('error', 'Nama service sudah ada! Gunakan nama lain.');
+        }
 
-        return redirect()->route('serviceitems.index')
-            ->with('success', 'Service item berhasil dibuat.');
+        try {
+            Serviceitem::create([
+                'service_name' => $request->service_name,
+                'price' => $price,
+                'is_active' => 'active',
+            ]);
+
+            return redirect()->route('serviceitems.index')
+                ->with('success', 'Service item berhasil dibuat.');
+        } catch (\Exception $e) {
+            return redirect()->route('serviceitems.index')
+                ->with('error', 'Terjadi kesalahan saat menyimpan data.');
+        }
     }
+
 
     // ✅ Edit
     public function edit($id)
@@ -80,7 +92,6 @@ class ServiceitemController extends Controller
         return view('pages.maindata.serviceitem.edit', compact('serviceitem'));
     }
 
-    // ✅ Update
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -93,21 +104,33 @@ class ServiceitemController extends Controller
         // Hapus semua selain angka dari input price
         $price = preg_replace('/\D/', '', $request->price);
 
-        $serviceitem->update([
-            'service_name' => $request->service_name,
-            'price' => $price,
-        ]);
+        // ✅ Cek duplikat nama (kecuali record saat ini)
+        $exists = Serviceitem::where('service_name', $request->service_name)
+            ->where('id', '!=', $id)
+            ->exists();
+        if ($exists) {
+            return redirect()->route('serviceitems.index')
+                ->with('error', 'Nama service sudah ada! Gunakan nama lain.');
+        }
 
-        return redirect()->route('serviceitems.index')
-            ->with('success', 'Service item berhasil diperbarui.');
+        try {
+            $serviceitem->update([
+                'service_name' => $request->service_name,
+                'price' => $price,
+            ]);
+
+            return redirect()->route('serviceitems.index')
+                ->with('success', 'Service item berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->route('serviceitems.index')
+                ->with('error', 'Terjadi kesalahan saat memperbarui data.');
+        }
     }
 
-    // ✅ Delete
-    // public function destroy($id)
-    // {
-    //     $serviceitem = Serviceitem::findOrFail($id);
-    //     $serviceitem->delete();
 
-    //     return response()->json(['success' => 'Service item berhasil dihapus.']);
-    // }
+    public function show($id)
+    {
+        $serviceitem = \App\Models\Serviceitem::findOrFail($id);
+        return view('pages.maindata.serviceitem.show', compact('serviceitem'));
+    }
 }

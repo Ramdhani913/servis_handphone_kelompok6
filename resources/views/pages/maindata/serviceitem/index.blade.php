@@ -163,7 +163,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
                 <h4 class="mb-0">Table Service Item</h4>
                 <a href="{{ route('serviceitems.create') }}" class="btn btn-tambah mt-2 mt-md-0">
-                    <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Service Item
+                    <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Data
                 </a>
             </div>
 

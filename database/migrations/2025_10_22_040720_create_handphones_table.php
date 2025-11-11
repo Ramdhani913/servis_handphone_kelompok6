@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('handphones', function (Blueprint $table) {
             $table->id();
             $table->string('brand');
-            $table->string('model');
+            $table->string('model')->unique();
             $table->year('release_year');
             $table->enum('is_active', ['active', 'inactive'])->default('active');
             $table->string('image');

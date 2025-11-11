@@ -22,9 +22,7 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
             position: relative;
             margin-top: 40px;
-            /* ✅ Tambahkan ini */
         }
-
 
         .card-detail h4 {
             font-size: 22px;
@@ -136,6 +134,12 @@
                 <div class="info-item">
                     <label>Role</label>
                     <span>{{ ucfirst($user->role) }}</span>
+                </div>
+
+                {{-- ✅ Tambahan: Status --}}
+                <div class="info-item">
+                    <label>Status</label>
+                    <span>{{ $user->status ?? 'Aktif' }}</span>
                 </div>
             </div>
         </div>

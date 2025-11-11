@@ -1,4 +1,3 @@
-
 <table class="table table-hover text-white">
     <thead>
         <tr>
@@ -22,7 +21,10 @@
                     </span>
                 </td>
                 <td>
+                    {{-- 🔹 Tombol Detail (warna sama seperti di tabel user) --}}
+                    
                     <a href="{{ route('serviceitems.edit', $item->id) }}" class="btn btn-sm btn-edit">Edit</a>
+                    
                     <form action="{{ route('serviceitems.destroy', $item->id) }}" method="POST" style="display:inline;"
                         class="delete-form">
                         @csrf
@@ -31,6 +33,7 @@
                             Delete
                         </button>
                     </form>
+                    <a href="{{ route('serviceitems.show', $item->id) }}" class="btn btn-sm btn-detail">Detail</a>
                 </td>
             </tr>
         @empty
@@ -40,4 +43,3 @@
         @endforelse
     </tbody>
 </table>
-

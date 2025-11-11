@@ -1,11 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- === STYLE UNTUK FOTO UPLOAD === --}}
     <style>
+        /* === FOTO PREVIEW === */
         .user-photo {
             display: flex;
-            justify-content: flex-start;
             align-items: center;
             margin-bottom: 20px;
         }
@@ -29,7 +28,6 @@
             border-radius: 50%;
             object-fit: cover;
             display: none;
-            /* disembunyikan dulu */
         }
 
         .photo-placeholder i {
@@ -76,7 +74,7 @@
             white-space: nowrap;
         }
 
-        /* === STYLE UMUM === */
+        /* === FORM STYLE === */
         body {
             background-color: #12121c;
         }
@@ -92,7 +90,7 @@
             background-color: #1e1e2d;
             color: #fff;
             border-radius: 12px;
-            padding: 40px 40px;
+            padding: 40px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
@@ -156,25 +154,9 @@
             gap: 10px;
         }
 
-        .user-photo {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .user-photo img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid #3f3f55;
-            object-fit: cover;
-            background-color: #26263b;
-        }
-
         @media (max-width: 768px) {
             .card-fullscreen {
-                padding: 20px 20px;
+                padding: 20px;
             }
 
             .btn-primary,
@@ -193,11 +175,10 @@
                     {{-- FOTO PREVIEW --}}
                     <div class="user-photo col-md-12">
                         <div class="photo-placeholder" id="photo-placeholder">
-                            <img id="preview-photo" alt="" src="">
+                            <img id="preview-photo" alt="">
                             <i class="mdi mdi-camera" id="photo-icon"></i>
                         </div>
                     </div>
-
 
                     {{-- LEFT COLUMN --}}
                     <div class="col-md-6">
@@ -240,10 +221,11 @@
                         <div class="form-group">
                             <label>Foto</label>
                             <div class="file-upload-wrapper">
-                                <label for="image" class="file-upload-btn mb-0">Pilih Foto</label>
+                                <label class="file-upload-btn mb-0">Pilih Foto</label>
                                 <span id="file-name-label" class="file-name text-truncate">Belum ada file</span>
                                 <input type="file" id="image" name="image" accept="image/*" style="display:none;">
                             </div>
+
                         </div>
 
                         <input type="hidden" name="is_active" value="active">
@@ -258,7 +240,7 @@
         </form>
     </div>
 
-    {{-- SCRIPT PREVIEW GAMBAR DAN NAMA FILE --}}
+    {{-- SCRIPT PREVIEW GAMBAR --}}
     <script>
         const imageInput = document.getElementById('image');
         const preview = document.getElementById('preview-photo');
@@ -269,7 +251,6 @@
             const file = event.target.files[0];
             if (file) {
                 fileNameLabel.textContent = file.name;
-
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     preview.src = e.target.result;
@@ -283,6 +264,11 @@
                 preview.style.display = 'none';
                 photoIcon.style.display = 'block';
             }
+        });
+
+        // klik label untuk trigger input
+        document.querySelector('.file-upload-btn').addEventListener('click', () => {
+            imageInput.click();
         });
     </script>
 @endsection
